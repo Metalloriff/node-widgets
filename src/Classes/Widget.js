@@ -13,13 +13,20 @@ global.ReactDOMServer = require("react-dom/server");
 
 // Listen for the init event, to create and render our widget instance
 ipcRenderer.on("initialize", (_, fp) => {
-    // Require the widget from its path
-    let widget = require(path.join(fp, "main.js"));
-    // If the init function doesn't exist, try getting the default export
-    if (typeof(widget.initialize) !== "function") widget = widget.default;
-    
-    // Try to init
-    widget.initialize(fp);
+    try {
+        // Require the widget from its path
+        let widget = require(path.join(fp, "main.js"));
+        // If the init function doesn't exist, try getting the default export
+        if (typeof (widget.initialize) !== "function") widget = widget.default;
+
+        // Try to init
+        widget.initialize(fp);
+    }
+    catch (err) {
+        console.error(err);
+        
+        remote.dialog.showErrorBox(`Failed to initialize widget "${fp.split("\\").slice(-1)[0]}"!`, err.stack);
+    }
 });
 
 // Define the lock and unlock events

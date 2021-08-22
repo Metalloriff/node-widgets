@@ -1,6 +1,7 @@
 ﻿const { app, dialog, Menu, Tray } = require("electron");
 const fs = require("fs");
 const path = require("path");
+const chokidar = require("chokidar");
 
 const WidgetManager = require("./Classes/WidgetManager");
 const WidgetConfig = require("./Classes/WidgetConfig");
@@ -23,7 +24,7 @@ module.exports = {
         // Inject the stylesheet source into the electron window
         // If an error is caught, display it to the user
         widget.instance.webContents.insertCSS(styleSource).catch(err =>
-            dialog.showErrorBox(`Failed to load styles for "${widgetName}"!`, err.toString()));
+            dialog.showErrorBox(`Failed to load styles for "${widgetName}"!`, err.stack));
     }
 };
 
@@ -32,8 +33,8 @@ let tray;
  * Handle initializing the tray.
  */
 function initTray() {
-    // Create the tray itself
-    tray = new Tray(path.join(__dirname, "trayIcon.png"));
+    // Create the tray if it doesn't exist
+    if (!tray) tray = new Tray(path.join(__dirname, "trayIcon.png"));
     
     // Build the context menu for the tray
     const menu = Menu.buildFromTemplate([
@@ -84,7 +85,7 @@ async function initWidgets() {
         console.error(`There was an error initializing ${widgetName}!`, err);
 
         // And display the error to the user
-        dialog.showErrorBox(`There was an error loading widget "${widgetName}"!`, err.toString());
+        dialog.showErrorBox(`There was an error loading widget "${widgetName}"!`, err.stack);
     }
     
     // Get the paths to our app data directories
@@ -107,14 +108,47 @@ async function initWidgets() {
         // If the widget is not a directory or, ignore it
         if (!fs.lstatSync(widgetPath).isDirectory()) continue;
         
-        // Try-catch to prevent a block in the widget loading sequence
-        try {
+        // Create the initializer
+        async function initWidget() {
             // Get the manifest and config properties
             const manifest = require(path.join(widgetPath, "manifest.json"));
             const config = new WidgetConfig(widgetPath);
-            
+
             // Initialize the widget in the manager and handle any errors
             await WidgetManager.initialize(widgetPath, manifest, config).catch(handleError.bind(null, widgetName));
+            initTray();
+        }
+        
+        // Create file watcher de-bounce event
+        async function reInitWidget() {
+            // Close the widget if it already exists
+            WidgetManager.widgetInstances[widgetName]?.window?.close();
+            
+            // Re-initialize the widget
+            await initWidget();
+        }
+        
+        // Try-catch to prevent a block in the widget loading sequence
+        try {
+            // Initialize the widget for the first time
+            await initWidget();
+            
+            // Create the initial boolean and a de-bouncer
+            let initial = true;
+            let deBouncer;
+            
+            // Watch for any file changes in the directory
+            chokidar.watch(widgetPath).on("all", (type, fp) => {
+                // De-bounce to prevent rapid reloading
+                clearTimeout(deBouncer);
+                deBouncer = setTimeout(() => {
+                    // If this is the first time, ignore it
+                    if (initial) return initial = false;
+                    
+                    // Re-initialize the widget, catching any errors
+                    reInitWidget().catch(handleError.bind(null, widgetName));
+                }, 500);
+            });
         }
         catch (err) {
             handleError(widgetName, err);

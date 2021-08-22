@@ -76,8 +76,8 @@ module.exports = new class WidgetManager {
         const widgetModulePath = path.join(__dirname, "Widget.js").replaceAll("\\", "/");
         
         // A little spaghetti to patch the require function and inject the Widget.js module into the browser window
-        await instance.webContents.executeJavaScript(
-            `((require) => {${
+        await instance.webContents.executeJavaScript(`
+            ((require) => {${
                 fs.readFileSync(widgetModulePath, "utf8")
             }})(require("module").createRequire("${widgetModulePath}"))
             
