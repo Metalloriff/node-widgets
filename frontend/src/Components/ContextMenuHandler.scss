@@ -1,0 +1,118 @@
+@import "../Variables.scss";
+
+.ContextMenuContainer {
+	position: relative;
+	z-index: 10000;
+	mask-image: none;
+
+	box-shadow: 0 0 10px rgba(black, 0.5);
+
+	border-radius: $primaryBorderRadius;
+	background-color: $tertiaryBG;
+
+	.ContextMenu {
+		.ContextMenuItem {
+			padding: 7.5px;
+			margin: 7.5px;
+			border-radius: $primaryBorderRadius;
+
+			cursor: pointer;
+
+			&:hover {
+				background: $secondaryHover;
+			}
+			
+			> .Icon {
+				width: 15px;
+				margin-right: 10px;
+			}
+
+			&.HasSubMenu {
+				position: relative;
+				
+				padding-right: 50px;
+
+				.ContextSubMenuChevron {
+					position: absolute;
+					display: inline-block;
+					
+					filter: invert(85%);
+					
+					width: 12px;
+					right: 8px;
+					bottom: 8px;
+				}
+
+				.ContextMenuContainer.SubMenuContainer {
+					position: absolute;
+					
+					top: 0;
+					left: 100%;
+
+					width: max-content;
+
+					cursor: default;
+
+					display: table-caption;
+
+					.ContextMenu.SubMenu {
+						
+					}
+				}
+			}
+
+			&.ToggleItem {
+				.ToggleBox {
+					position: relative;
+
+					display: inline-block;
+					background: $secondaryHover;
+					border: 2px solid black;
+					border-radius: 100%;
+
+					width: 12px;
+					height: 12px;
+					
+					top: 2px;
+					margin-right: 10px;
+
+					.ToggleBoxTick {
+						$m: 2px;
+
+						display: inline-block;
+						position: absolute;
+						border-radius: 100%;
+
+						top: $m; left: $m; bottom: $m; right: $m;
+						background-color: $secondaryHover;
+
+						transform: scale(0);
+						transition: transform $ft;
+					}
+
+					&.Checked {
+						border-color: $primaryColor;
+
+						.ToggleBoxTick {
+							transform: scale(1);
+						}
+					}
+				}
+			}
+			
+			.SliderItem {
+				margin-top: 10px;
+				width: 200px;
+				margin-left: 0;
+			}
+		}
+
+		.ContextMenuDivider {
+			background: $secondaryHover;
+
+			padding: 2px;
+			margin: 7.5px;
+			border-radius: $primaryBorderRadius;
+		}
+	}
+}

@@ -1,0 +1,240 @@
+@import "../Variables.scss";
+
+.BaseModal {
+	position: relative;
+	
+	width: 800px;
+	max-width: 90vw;
+	height: 600px;
+	max-height: 90vh;
+	
+	border-radius: $secondaryBorderRadius;
+	padding: 10px;
+	
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.ModalContainer {
+	background-color: rgba(black, 0.8);
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	position: fixed;
+	top: 0; left: 0; bottom: 0; right: 0;
+	opacity: 0;
+
+	transition: opacity $t;
+
+	pointer-events: none;
+
+	z-index: 1000;
+
+	.Modal {
+		position: fixed;
+		top: 0; left: 0; bottom: 0; right: 0;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		
+		will-change: transform, opacity;
+
+		.ClipboardModal {
+			overflow: hidden;
+			color: white;
+			font-size: 1.5em;
+	
+			padding: 20px;
+			border-radius: $primaryBorderRadius;
+
+			height: 30px;
+		}
+
+		.ImageModal {
+			width: 90vw;
+			height: 90vh;
+			
+			img {
+				width: 100%;
+				height: 100%;
+				
+				object-fit: contain;
+			}
+			
+			.ArrowsContainer {
+				position: absolute;
+				top: 0; left: 0; bottom: 0; right: 0;
+				
+				.Arrow {
+					position: absolute;
+					font-size: 10em;
+					
+					bottom: 0;
+					filter: drop-shadow(0 0 10px black);
+					
+					padding: 0 50px;
+					
+					&.Right {
+						right: 0;
+					}
+
+					cursor: pointer;
+					opacity: 0.5;
+					transition: opacity $ft;
+					
+					&:Hover {
+						opacity: 1;
+					}
+				}
+			}
+		}
+		
+		.BoolModal, .StringModal {
+			position: relative;
+			font-size: 1.2em;
+
+			width: 40vw;
+			height: max-content;
+
+			padding: 20px;
+			border-radius: $primaryBorderRadius;
+			
+			display: flex;
+			flex-direction: column;
+			
+			.Title {
+				text-align: center;
+				font-weight: bolder;
+				
+				margin: -10px auto;
+			}
+			
+			.Description {
+				margin-top: 20px;
+				text-align: center;
+			}
+			
+			.Field {
+				margin-top: 20px;
+				
+				outline: none;
+				border: none;
+				
+				padding: 10px;
+				margin-bottom: 5px;
+				border-radius: $primaryBorderRadius;
+				
+				font-size: 1.1em;
+				flex-grow: 1;
+				
+				white-space: pre-line;
+				color: white;
+			}
+			
+			.ChatAutoCompleteContainer {
+				bottom: 125px !important;
+			}
+			
+			.Footer {
+				display: flex;
+				flex-direction: row;
+				
+				.Button {
+					background: $primaryColor;
+					flex-grow: 1;
+					
+					text-align: center;
+					border-radius: $primaryBorderRadius;
+					
+					font-weight: bolder;
+					margin-top: 10px;
+					padding: 7px;
+
+					cursor: pointer;
+					
+					&:First-Child { margin-right: 10px; }
+					&:Last-Child { margin-left: 10px; }
+				}
+			}
+		}
+
+		.BoolModal {
+			width: 30vw;
+			
+			.Footer {
+				margin-top: 5px;
+			}
+		}
+		
+		&.Closing {
+			animation-name: modalDetach !important;
+			animation-duration: 150ms;
+			animation-timing-function: steps(20);
+			
+			transform: scale(0);
+		}
+	}
+
+	&.Active {
+		opacity: 1;
+
+		pointer-events: all;
+
+		.Modal {
+			animation-name: modalAttach;
+			animation-duration: 150ms;
+			animation-timing-function: steps(20);
+		}
+	}
+
+	@keyframes modalAttach {
+		0% {
+			transform: scale(0.5);
+			opacity: 0.5;
+		}
+	}
+
+	@keyframes modalDetach {
+		0% {
+			transform: none;
+			opacity: 1;
+		}
+		
+		100% {
+			transform: scale(0.5);
+			opacity: 0;
+		}
+	}
+}
+
+.LoadingModal {
+	position: relative;
+	
+	width: 250px;
+	height: 270px;
+	padding: 20px 0;
+	
+	border-radius: $secondaryBorderRadius;
+	
+	.LoadingCrescentContainer {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+	
+	.Title {
+		position: absolute;
+		left: 0; bottom: 10px; right: 0;
+		
+		text-align: center;
+	}
+}
+
+#root .Mobile {
+	.BoolModal, .StringModal {
+		width: 80vw;
+	}
+}

@@ -1,0 +1,83 @@
+@import "./Variables.scss";
+
+:root {
+	--primary-color: #8fbcbb;
+	--secondary-color: #88c0d0;
+	
+	--primary-bg: #2e3440;
+	--secondary-bg: #3b4252;
+	--tertiary-bg: #434c5e;
+	
+	--primary-border-radius: 4px;
+	--secondary-border-radius: 7px;
+}
+
+html {
+	background-color: $primaryBG;
+	color: white;
+
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	overflow-x: hidden;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+	'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+	sans-serif;
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	margin: 0;
+	color: darken(white, 12%);
+}
+
+// I hate Firefox
+* {
+	scrollbar-width: thin;
+	scrollbar-color: $primaryColor rgba(black, 0.1);
+}
+
+.App, .Main {
+	min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+	background: rgba(black, 0.1);
+	width: 5px;
+	height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: $primaryColor;
+	border-radius: $primaryBorderRadius;
+}
+
+footer {
+	background-color: $secondaryBG;
+	
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	
+	padding: 10px;
+	
+	box-shadow: 0 0 15px rgba(black, 0.1);
+	
+	> .Divider {
+		width: 2px;
+		height: 1.5em;
+		
+		border-radius: 2px;
+		margin: 0 10px;
+		
+		background-color: $primaryHover;
+	}
+}
+
+a {
+	color: $primaryColor;
+	text-decoration: none;
+	font-weight: bold;
+}
