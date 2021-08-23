@@ -99,6 +99,9 @@ async function initWidgets() {
         // If the widget is not a directory or, ignore it
         if (!fs.lstatSync(widgetPath).isDirectory()) continue;
         
+        // If the main.js or manifest.json files do not exist, it is not a valid widget, so ignore it
+        if (!fs.existsSync(path.join(widgetPath, "main.js")) || !fs.existsSync(path.join(widgetPath, "manifest.json"))) continue;
+        
         // Create the initializer
         async function initWidget() {
             // Get the manifest and config properties
@@ -113,7 +116,7 @@ async function initWidgets() {
         // Create file watcher de-bounce event
         async function reInitWidget() {
             // Close the widget if it already exists
-            WidgetManager.widgetInstances[widgetName]?.window?.close();
+            await WidgetManager.widgetInstances[widgetName]?.window?.destroy();
             
             // Re-initialize the widget
             await initWidget();
