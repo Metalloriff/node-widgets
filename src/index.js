@@ -50,17 +50,7 @@ function initTray() {
                     type: "submenu",
                     label: widgetName,
                     // Build the widget sub-menu
-                    submenu: Menu.buildFromTemplate([
-                        { label: "Open Settings", click: () => console.log("not yet added") },
-                        
-                        // TODO add always on top option
-                        // TODO add opacity option
-                        // TODO add click through option
-                        
-                        { type: "separator" },
-                        
-                        { label: "Unlock Widget", click: () => widget.window.webContents.send("unlock") }
-                    ])
+                    submenu: WidgetManager.buildWidgetSubMenu(widget)
                 }))
             )
         },

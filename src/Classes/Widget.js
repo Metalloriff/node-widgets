@@ -42,6 +42,15 @@ window.lockWidget = () => {
 
 ipcRenderer.on("unlock", () => document.documentElement.classList.add("unlocked"));
 
+// Create the context menu
+window.addEventListener("contextmenu", e => {
+    e.preventDefault();
+    
+    remote.Menu.buildFromTemplate([
+        { label: "Unlock Widget", click: () => document.documentElement.classList.add("unlocked") }
+    ]).popup({ window: remote.getCurrentWindow() });
+})
+
 // Define and export the Widget base class
 global.Widget = module.exports = class Widget {
     // Meta data

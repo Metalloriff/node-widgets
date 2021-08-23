@@ -1,4 +1,4 @@
-﻿const { BrowserWindow } = require("electron");
+﻿const { BrowserWindow, Menu } = require("electron");
 
 const fs = require("fs");
 const path = require("path");
@@ -91,11 +91,30 @@ module.exports = new class WidgetManager {
             window: instance
         };
         
-        // Send the widget to the desktop
-        WidgetPositionHandler.sendWindowToBack(instance.getNativeWindowHandle());
+        // Send the widget to the desktop if it's not always on top
+        !instance.isAlwaysOnTop() && WidgetPositionHandler.sendWindowToBack(instance.getNativeWindowHandle());
         
         // This doesn't actually do anything
         // Fuck you
         // ["minimize", "blur", "hide"].forEach(ev => instance.on(ev, () => instance.show()));
+    }
+
+    /**
+     * Builds a context menu for a widget.
+     * @param widget The widget to build from.
+     * @returns {Electron.Menu} The Electron context menu item.
+     */
+    buildWidgetSubMenu(widget) {
+        return [
+            { label: "Open Settings", click: () => console.log("not yet added") },
+
+            // TODO add always on top option
+            // TODO add opacity option
+            // TODO add click through option
+
+            { type: "separator" },
+
+            { label: "Unlock Widget", click: () => widget.window.webContents.send("unlock") }
+        ];
     }
 }
