@@ -43,11 +43,11 @@ module.exports = new class WidgetManager {
             )
         );
 
-        // Set the title to the directory name
-        instance.title = directoryPath.split("\\").slice(-1)[0];
-
         // Load and render the HTML data
         await instance.loadFile(path.join(__dirname, "..", "BaseWidget.html"));
+
+        // Set the title to the directory name
+        instance.title = directoryPath.split("\\").slice(-1)[0];
         
         // Set the position to the config position, if present
         const windowPosition = config.get("position", null);
@@ -64,7 +64,9 @@ module.exports = new class WidgetManager {
         await instance.webContents.executeJavaScript(`
             ((require) => {${
                 fs.readFileSync(widgetModulePath, "utf8")
-            }})(require("module").createRequire("${widgetModulePath}"))
+            }})(require("module").createRequire("${widgetModulePath}"));
+            
+            document.title = "${instance.title}";
             
             //# sourceURL=nodeWidgets://${widgetModulePath}/`
         );
