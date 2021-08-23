@@ -43,6 +43,6 @@ module.exports = class WidgetConfig {
      * Saves the current config data to the hard disk.
      */
     save() {
-        fs.writeFile(this.fp, JSON.stringify(this.data), { encoding: "utf8" }, () => {});
+        fs.writeFileSync(this.fp, JSON.stringify(this.data), { encoding: "utf8" });
     }
 }

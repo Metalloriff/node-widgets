@@ -2,6 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 const chokidar = require("chokidar");
+const _ = require("lodash");
 
 const WidgetManager = require("./Classes/WidgetManager");
 const WidgetConfig = require("./Classes/WidgetConfig");
@@ -123,22 +124,20 @@ async function initWidgets() {
             // Initialize the widget for the first time
             await initWidget();
             
-            // Create the initial boolean and a de-bouncer
+            // Create the initial boolean
             let initial = true;
-            let deBouncer;
             
             // Watch for any file changes in the directory
-            chokidar.watch(widgetPath).on("all", (type, fp) => {
-                // De-bounce to prevent rapid reloading
-                clearTimeout(deBouncer);
-                deBouncer = setTimeout(() => {
-                    // If this is the first time, ignore it
-                    if (initial) return initial = false;
-                    
-                    // Re-initialize the widget, catching any errors
-                    reInitWidget().catch(handleError.bind(null, widgetName));
-                }, 500);
-            });
+            chokidar.watch(widgetPath).on("all", _.debounce((type, fp) => {
+                // Ignore config changes
+                if (fp.endsWith("config.json")) return;
+                
+                // If this is the first time, ignore it
+                if (initial) return initial = false;
+                
+                // Re-initialize the widget, catching any errors
+                reInitWidget().catch(handleError.bind(null, widgetName));
+            }, 500));
         }
         catch (err) {
             handleError(widgetName, err);
