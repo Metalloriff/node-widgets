@@ -32,6 +32,9 @@ html {
   box-sizing: border-box;
   overflow: hidden;
   
+  font-family: sans-serif;
+  color: white;
+
   &.unlocked {
     border: 4px solid #779fff;
     border-radius: 10px;

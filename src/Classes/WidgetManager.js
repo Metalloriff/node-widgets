@@ -94,6 +94,7 @@ module.exports = new class WidgetManager {
     buildWidgetSubMenu(widget) {
         return [
             { label: "Open Settings", click: () => console.log("not yet added") },
+            { label: "Open Dev Tools", click: () => widget.window.webContents.openDevTools() },
 
             // TODO add always on top option
             // TODO add opacity option
